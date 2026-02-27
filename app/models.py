@@ -11,9 +11,9 @@ class User(SQLModel, table=True):
     password:str
 
     def __init__(self, username, email, password):
-    self.username = username
-    self.email = email
-    self.set_password(password)
+        self.username = username
+        self.email = email
+        self.set_password(password)
 
     def set_password(self, password):
         self.password = password_hash.hash(password)
