@@ -97,5 +97,19 @@ def search_user(query: str):
         for user in users:
             print(user)
 
+@cli.command()
+def list_users(limit: int = 10, offset: int = 0):
+    with get_session() as db:
+        users = db.exec(
+            select(User).offset(offset).limit(limit)
+        ).all()
+
+        if not users:
+            print("No users found")
+            return
+        
+        for user in users:
+            print(user)
+
 if __name__ == "__main__":
     cli()
