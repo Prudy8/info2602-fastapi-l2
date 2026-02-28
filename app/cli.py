@@ -65,7 +65,6 @@ def create_user(username: str, email:str, password: str):
             print(newuser) # print the newly created user
 
 @cli.command()
-@cli.command()
 def delete_user(username: str):
     with get_session() as db:
         user = db.exec(select(User).where(User.username == username)).first()
@@ -76,6 +75,27 @@ def delete_user(username: str):
         db.commit()
         print(f'{username} deleted')
 
+@cli.command()
+def search_user(query: str):
+    with get_session() as db:
+        pattern = f"%{query}%"
+
+        username_matches = db.exec(
+            select(User).where(User.username.like(pattern))
+            ).all()
+        
+        email_matches = db.exec(
+            select(User).where(User.email.like(pattern))
+            ).all()
+        
+        users = {user.id: user for user in username_matches + email_matches}.values()
+
+        if not users:
+            print(f'No users found matching "{query}"')
+            return
+        
+        for user in users:
+            print(user)
 
 if __name__ == "__main__":
     cli()
