@@ -1,4 +1,4 @@
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, Relationship
 from typing import Optional
 from pwdlib import PasswordHash
 
@@ -34,3 +34,15 @@ class Todo(SQLModel, table=True):
 
     def toggle(self):
         self.done = not self.done
+
+class TodoCategory(SQLModel, table=True):
+    todo_id: int|None = Field(primary_key=True, foreign_key='todo.id')
+    category_id: int|None = Field(primary_key=True, foreign_key='category.id')
+    
+class Category(SQLModel, table=True):
+    id: Optional[int] =  Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key='user.id') #set user_id as a foreign key to user.id 
+    text: str = Field(max_length=255)
+
+    todos: list['Todo'] = Relationship(back_populates=("categories"), link_model=TodoCategory)
+    categories: list['Category'] = Relationship(back_populates=("todos"), link_model=TodoCategory)
