@@ -30,5 +30,7 @@ class Todo(SQLModel, table=True):
     done: bool = Field(default=False)
     # done: bool = False  # <---- can also be written this way if you prefer a pythonic default
 
+    user: User = Relationship(back_populates="todos")
+
     def toggle(self):
         self.done = not self.done
