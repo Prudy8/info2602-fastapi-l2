@@ -10,6 +10,8 @@ class User(SQLModel, table=True):
     email:str = Field(index=True, unique=True)
     password:str
 
+    todos: list['Todo'] = Relationship(back_populates="user")
+
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
